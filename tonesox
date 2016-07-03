@@ -1,0 +1,4 @@
+#!/bin/sh
+# uses SOX to playback sound for systems without OSS and where padsp doesn't work i.e. platform-independent
+# edit to allow command line inputs
+./tonegen -d - | play -t raw -b 16 -e signed -c 1 -r 44100 -

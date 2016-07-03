@@ -12,8 +12,12 @@ Generates a sine wave on the sound card or standard out for Linux and *BSD syste
 Compile
 =======
 ::
+    
+    make
 
-    cc -lm tonegen.c -o tonegen
+or::
+
+    cc tonegen.c -o tonegen -lm
 
 Run
 ===
@@ -44,7 +48,7 @@ run tonegen with ``padsp`` that emulates ``/dev/dsp``::
 
 Mac and others not working
 --------------------------
-Perhaps try ``sox`` ``play``::
+Perhaps try ``sox`` ``play``. If this works for you, use the ``tonesox`` script::
 
     ./tonegen -d - | play -t raw -b 16 -e signed -c 1 -r 44100 -
 
