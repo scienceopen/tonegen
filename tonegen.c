@@ -59,7 +59,7 @@
     #define DSP "/dev/dsp"
 #elif __APPLE__
     /* use sox via stdin; which OS X library would work here? */
-    #define DSP '\0'
+    #define DSP "N/A"
     #define SNDCTL_DSP_GETFMTS '\0'
     #define SNDCTL_DSP_STEREO '\0'
     #define SNDCTL_DSP_SPEED '\0'
