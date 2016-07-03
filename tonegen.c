@@ -86,12 +86,10 @@ int main(argc,argv)
 int argc;
 char *argv[];
 {
-char buf[BUF_SIZE];
-int gotmask, setmask, i, len, test;
+int gotmask, i, test;
 int cyclesamples;
 double ratio = 1;
 short int dspnum;
-unsigned int temp1, temp2;
 float f = 0;
 float sinnum;
 char *p;
