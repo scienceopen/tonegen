@@ -56,7 +56,9 @@
 #ifdef __linux__
     #include <linux/soundcard.h>
     #define DSP "/dev/dsp"
-#else
+#elif __APPLE__
+    /* use sox via stdin; which OS X library would work here? */
+#elif __unix__
     #include <machine/soundcard.h>
     #define DSP "/dev/dspW"
 #endif
