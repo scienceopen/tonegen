@@ -22,6 +22,8 @@
  *  
  *  Version.Revision
  *  ----------------
+ *  1.6 - Allow time_sec to be fraction of a second
+ *
  *  1.5 - Added some ifdefs to compile better on Linux.
  *
  *  1.4 - Counts number of cycles now to be accurate with STDOUT timed 
@@ -63,14 +65,12 @@
 #define FALSE 0
 #define BUF_SIZE 4096
 
-char verrev[BUF_SIZE] = "$Id: tonegen.c,v 1.4 2000/07/04 06:15:39 pozar Exp pozar $";
-
 char device[BUF_SIZE] = DSP;
 int stereo = FALSE;
 int rate = 44100;
 int freq = 1000;
-int time_sec = 0;
-int elapst_sec = 0;
+float time_sec = 0.;
+float elapst_sec = 0.;
 int db_down = 10;
 int devfh;
 int stdout_flg = FALSE;
@@ -124,7 +124,7 @@ char *p;
          case 'H':   /* Help... */
          case 'h':
             banner();
-            exit(0);
+            return EXIT_SUCCESS;
          case 'R':   /* Sample rate... */
          case 'r':
             i++;
@@ -137,31 +137,31 @@ char *p;
          case 'T':   /* Seconds to run... */
          case 't':
             i++;
-            time_sec = atoi(argv[i]);
+            time_sec = atof(argv[i]);
             break;
          default:
             printf("I don't know the meaning of the command line argument: \"%s\".\n",argv[i]);
             banner();
-            exit(1);
+           return EXIT_FAILURE;
       }
    }
 
    /* Lets do some santiy checking on what we are to do... */
    if(freq >= (rate/2)){
       printf("Tone frequency of %i cannot be reproduced with a sample rate of %i. \nTry a tone below %i.\nExiting...\n",freq,rate,rate/2);
-      exit(1);
+      return EXIT_FAILURE;
    }
    if(rate >= 44101){
       printf("This sample rate of %i can not be over 44100 Hz.\nExiting...\n",rate);
-      exit(1);
+      return EXIT_FAILURE;
    }
 
    if(!stdout_flg){
       printf("The \"sample rate\" is %i.  The tone is %i Hz at %i dB down",rate, freq, db_down);
-      if(time_sec == 0)
+      if(time_sec <= 0.)
          printf(".\n");
       else
-         printf(" for %i seconds.\n",time_sec);
+         printf(" for %f seconds.\n",time_sec);
    }
 
    p=malloc(rate*2*.15);	/* This will be used for the buffer 
@@ -172,13 +172,13 @@ char *p;
    if(!stdout_flg){
       if((devfh = open(device, O_RDWR)) == -1){
          perror("opening device");
-         exit(1);
+         return EXIT_FAILURE;
       }
 
       /* What formats does this device support? */
       if(ioctl(devfh, SNDCTL_DSP_GETFMTS, &gotmask) == -1){
          perror("get dsp mask");
-         exit(1);
+         return EXIT_FAILURE;
       }
 
       /* Set the number or channels (ie mono vs. stereo)...
@@ -187,7 +187,7 @@ char *p;
       test = stereo;
       if(ioctl(devfh, SNDCTL_DSP_STEREO, &stereo) == -1){
          perror("Tried to set dsp to mono or stereo");
-         exit(1);
+         return EXIT_FAILURE;
       }
       if (stereo != test){
          if(stereo){
@@ -195,14 +195,14 @@ char *p;
          } else {
             perror("Tried to set dsp to stereo but it only supports mono.\n");
          }
-         exit(1);
+         return EXIT_FAILURE;
       }
 
       /* Set the sample rate... */
       test = rate;
       if(ioctl( devfh, SNDCTL_DSP_SPEED, &test) == -1){
          perror("set sample rate");
-         exit(1);
+         return EXIT_FAILURE;
       }
       if(rate != test){
          printf("Could not set the sample rate to: \"%i\". \"%i\" was returned\n",
@@ -225,11 +225,11 @@ char *p;
 
       if(i > (rate * 2 * 0.1)){ /* Lets only go to 10% of one second to not
                                  fill up the 15% buffer */
-         elapst_sec = elapst_sec + 1;
+         elapst_sec = elapst_sec + 1.;
          if(stdout_flg){
             if(write(1, p, i) == -1){
                perror("Trouble writing to STDOUT.");
-               exit(1);
+               return EXIT_FAILURE;
             }
          } else {
             write(devfh, p, i);
@@ -239,10 +239,10 @@ char *p;
 
       f = f + ((2*M_PI)/cyclesamples);
       if(f >= (2*M_PI)){     /* We have come to the end of a full cycle. */
-         if (time_sec > 0){	/* If it is time to stop then do it at
+         if (time_sec > 0.){	/* If it is time to stop then do it at
 	                           this nice zero crossing. */
-            if (elapst_sec >= time_sec * 10){
-               exit(1);
+            if (elapst_sec >= time_sec * 10.){
+               return EXIT_FAILURE;
             }
          }
          f = 0;
@@ -250,7 +250,7 @@ char *p;
       }
    }
 
-   return 0;
+   return EXIT_SUCCESS;
 }
 
 void banner()
