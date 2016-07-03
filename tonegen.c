@@ -57,8 +57,8 @@
 #ifdef __linux__
     #include <linux/soundcard.h>
     #define DSP "/dev/dsp"
-#elif __APPLE__
-    /* use sox via stdin; which OS X library would work here? */
+#elif __APPLE__ || __CYGWIN__ || __WIN32__
+    /* use sox via stdin */
     #define DSP "N/A"
     #define SNDCTL_DSP_GETFMTS '\0'
     #define SNDCTL_DSP_STEREO '\0'
