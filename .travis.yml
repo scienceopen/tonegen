@@ -12,7 +12,7 @@ os:
 
 
 script: 
-    - cc -Wall -pedantic -Wextra -o tonegen tonegen.c -lm
+    - make
     - ./tonegen -d - -t 0.1 -r 44100 > test.raw
     - ls -l test.raw
 #    - test $(wc -c test.raw | cut -d' ' -f1) -eq 17644 #not for mac
