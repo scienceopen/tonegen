@@ -221,7 +221,7 @@ char *p;
    i = 0;
 
    memset(p,0x7f,(rate*2*.15));
-   while (1){
+   while (true){
       sinnum = sin(f) / ratio;
       dspnum = 0x7fff * sinnum;
 
@@ -247,7 +247,7 @@ char *p;
          if (time_sec > 0.){	/* If it is time to stop then do it at
 	                           this nice zero crossing. */
             if (elapst_sec >= time_sec * 10.){
-               return EXIT_FAILURE;
+               return EXIT_SUCCESS;
             }
          }
          f = 0;
