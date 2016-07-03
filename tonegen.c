@@ -52,30 +52,33 @@
 #include <string.h>
 #include <unistd.h>
 #include <math.h>
+#include <stdbool.h>
 
 #ifdef __linux__
     #include <linux/soundcard.h>
     #define DSP "/dev/dsp"
 #elif __APPLE__
     /* use sox via stdin; which OS X library would work here? */
+    #define DSP '\0'
+    #define SNDCTL_DSP_GETFMTS '\0'
+    #define SNDCTL_DSP_STEREO '\0'
+    #define SNDCTL_DSP_SPEED '\0'
 #elif __unix__
     #include <machine/soundcard.h>
     #define DSP "/dev/dspW"
 #endif
 
-#define TRUE 1
-#define FALSE 0
 #define BUF_SIZE 4096
 
 char device[BUF_SIZE] = DSP;
-int stereo = FALSE;
+bool stereo = false;
 int rate = 44100;
 int freq = 1000;
 float time_sec = 0.;
 float elapst_sec = 0.;
 int db_down = 10;
 int devfh;
-int stdout_flg = FALSE;
+bool stdout_flg = false;
 
 void banner();
 
@@ -102,7 +105,7 @@ char *p;
          case 'd':
             i++;
             if('-' == argv[i][0]){
-               stdout_flg = TRUE;
+               stdout_flg = true;
                strcpy(device,"/dev/tty");
             } else{ 
                strncpy(device,argv[i],BUF_SIZE);
@@ -134,7 +137,7 @@ char *p;
             break;
          case 'S':   /* Run in stereo... */
          case 's':
-            stereo = TRUE;
+            stereo = true;
             break;  
          case 'T':   /* Seconds to run... */
          case 't':
