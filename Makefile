@@ -1,2 +1,2 @@
 tonegen: tonegen.c
-	cc $< -o $@ -lm
+	$(CC) $< -o $@ -lm
