@@ -15,5 +15,4 @@ script:
     - cc -o tonegen tonegen.c -lm
     - ./tonegen -d - -t 0.1 -r 44100 > test.raw
     - ls -l test.raw
-    #- test $(du test.raw -b | cut -f 1) -lt 20000 
-# -eq 17644
+    - test $(du test.raw -b | cut -f 1) -eq 17644
