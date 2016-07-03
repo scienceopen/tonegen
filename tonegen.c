@@ -47,14 +47,16 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include <string.h>
+#include <unistd.h>
 #include <math.h>
 
-#ifdef LINUX
-#include <linux/soundcard.h>
-#define DSP "/dev/dsp"
+#ifdef __linux__
+    #include <linux/soundcard.h>
+    #define DSP "/dev/dsp"
 #else
-#include <machine/soundcard.h>
-#define DSP "/dev/dspW"
+    #include <machine/soundcard.h>
+    #define DSP "/dev/dspW"
 #endif
 
 #define TRUE 1
@@ -66,12 +68,15 @@ char verrev[BUF_SIZE] = "$Id: tonegen.c,v 1.4 2000/07/04 06:15:39 pozar Exp poza
 char device[BUF_SIZE] = DSP;
 int stereo = FALSE;
 int rate = 44100;
-int freq = 400;
+int freq = 1000;
 int time_sec = 0;
 int elapst_sec = 0;
-int db_down = 0;
+int db_down = 10;
 int devfh;
 int stdout_flg = FALSE;
+
+void banner();
+
 int main(argc,argv)
 int argc;
 char *argv[];
@@ -85,6 +90,8 @@ unsigned int temp1, temp2;
 float f = 0;
 float sinnum;
 char *p;
+
+
 
    /* scan command line arguments, and look for files to work on. */
    for (i = 1; i < argc; i++) {
@@ -246,7 +253,7 @@ char *p;
    return 0;
 }
 
-banner()
+void banner()
 {
    printf("tonegen: Generates a sine wave on the sound card or standard out.\n");
    printf("   -a dB       Sets attenuation from \"all ones\" in dB.  Default is \"%i db\".\n",db_down);
@@ -258,5 +265,4 @@ banner()
    printf("   -t seconds  Sets time to run.  Default is infinite.\n");
    printf("               The length of the tone will run over slightly until full\n");
    printf("               cycle stops at a \"zero crossing\" to prevent clicks.\n");
-   return;
 }
