@@ -1,48 +1,48 @@
 /* 
- *  
- *  TONEGEN
- *  
- *  Plays a sine wave via the dsp or standard out.
- *  
- *  Copyright (C) 2000 Timothy Pozar pozar@lns.com
- *  
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 2
- *  of the License, or (at your option) any later version.
- *  
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *  
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *  
- *  Version.Revision
- *  ----------------
- *  1.6 - Allow time_sec to be fraction of a second
- *
- *  1.5 - Added some ifdefs to compile better on Linux.
- *
- *  1.4 - Counts number of cycles now to be accurate with STDOUT timed 
- *        playing.
- *
- *  1.3 - Buffered the output (0.1 sec) to not hiccup on a buzy system.
- *
- *  1.2 - Tones stop at a zero crossing when you define a time to run
- *        reduce nasty pops.
- *
- *  1.1 - Found a bug in my sine code where I was adding a duplicate
- *        sample.  The tone should be "more" pure now.
- *
- *  1.0 - First release to a friend.  
- *  
- *  This program needs the math lib.  Compile with something like...  
- *  
- *                   cc -lm -o tonegen tonegen.c
- *  
+  
+  TONEGEN
+ 
+  Plays a sine wave via the dsp or standard out.
+  
+  Copyright (C) 2000 Timothy Pozar pozar@lns.com
+  
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  as published by the Free Software Foundation; either version 2
+  of the License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+   
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  
+  Version.Revision
+  ----------------
+  1.6 - Allow time_sec to be fraction of a second
+
+  1.5 - Added some ifdefs to compile better on Linux.
+
+  1.4 - Counts number of cycles now to be accurate with STDOUT timed 
+        playing.
+
+  1.3 - Buffered the output (0.1 sec) to not hiccup on a buzy system.
+
+  1.2 - Tones stop at a zero crossing when you define a time to run
+        reduce nasty pops.
+
+  1.1 - Found a bug in my sine code where I was adding a duplicate
+        sample.  The tone should be "more" pure now.
+
+  1.0 - First release to a friend.  
+ 
+  This program needs the math lib.  Compile: 
+  
+    cc  -o tonegen tonegen.c -lm
+
  */
 
 #include <stdio.h>
@@ -73,7 +73,7 @@
 char device[BUF_SIZE] = DSP;
 bool stereo = false;
 int rate = 44100;
-int freq = 1000;
+float freq = 1000.;
 float time_sec = 0.;
 float elapst_sec = 0.;
 int db_down = 10;
@@ -82,9 +82,7 @@ bool stdout_flg = false;
 
 void banner();
 
-int main(argc,argv)
-int argc;
-char *argv[];
+int main(int argc, char **argv)
 {
 int gotmask, i, test;
 int cyclesamples;
@@ -112,7 +110,7 @@ char *p;
          case 'F':   /* tone freqency... */
          case 'f':
             i++;
-            freq = atoi(argv[i]);
+            freq = atof(argv[i]);
             break;
          case 'A':   /* Attenuate in dB... */
          case 'a':
@@ -151,16 +149,16 @@ char *p;
 
    /* Lets do some santiy checking on what we are to do... */
    if(freq >= (rate/2)){
-      printf("Tone frequency of %i cannot be reproduced with a sample rate of %i. \nTry a tone below %i.\nExiting...\n",freq,rate,rate/2);
+      printf("Tone frequency of %f cannot be reproduced with a sample rate of %i. \nTry a tone below %i.\nExiting...\n",freq,rate,rate/2);
       return EXIT_FAILURE;
    }
-   if(rate >= 44101){
-      printf("This sample rate of %i can not be over 44100 Hz.\nExiting...\n",rate);
+   if(rate >= 100000){
+      printf("Sample rate of %i can not be over 100000 Hz.\nExiting...\n",rate);
       return EXIT_FAILURE;
    }
 
    if(!stdout_flg){
-      printf("The \"sample rate\" is %i.  The tone is %i Hz at %i dB down",rate, freq, db_down);
+      printf("The \"sample rate\" is %i.  The tone is %f Hz at %i dB down",rate, freq, db_down);
       if(time_sec <= 0.)
          printf(".\n");
       else
@@ -262,7 +260,7 @@ void banner()
    printf("   -a dB       Sets attenuation from \"all ones\" in dB.  Default is \"%i db\".\n",db_down);
    printf("   -d device   Sets device name.  Default is \"%s\".\n",device);
    printf("               If \"device\" is \"-\" then it uses STDOUT\n");
-   printf("   -f Hz       Sets tone in Hertz.  Default is \"%i Hz\".\n",freq);
+   printf("   -f Hz       Sets tone in Hertz.  Default is \"%f Hz\".\n",freq);
    printf("   -r rate     Sets device sample rate in Hertz.  Default is \"%i Hz\".\n",rate);
    /* printf("   -s          Sets device to run in stereo.  Default is mono.\n"); */
    printf("   -t seconds  Sets time to run.  Default is infinite.\n");
