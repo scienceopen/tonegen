@@ -42,7 +42,7 @@ try the section applying to your OS.
 
 PulseAudio
 ----------
-run tonegen with ``padsp`` that emulates ``/dev/dsp``::
+run tonegen with `padsp <http://gnu.wiki/man1/padsp.1.php>`_ that emulates ``/dev/dsp``::
 
     padsp ./tonegen
 
