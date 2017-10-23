@@ -50,7 +50,7 @@ Mac and others not working
 --------------------------
 Perhaps try ``sox`` ``play``. If this works for you, use the ``tonesox`` script::
 
-.. code:: bash
+.. code:: sh
 
-    ./tonegen -d - | play -t raw -b 16 -e signed -c 1 -r 44100 -
+  ./tonegen -d - | play -t raw -b 16 -e signed -c 1 -r 44100 -
 
