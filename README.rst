@@ -1,5 +1,5 @@
-.. image:: https://travis-ci.org/scienceopen/tonegen.svg?branch=master
-    :target: https://travis-ci.org/scienceopen/tonegen
+.. image:: https://travis-ci.org/scivision/tonegen.svg?branch=master
+    :target: https://travis-ci.org/scivision/tonegen
 
 =======
 tonegen
@@ -49,6 +49,8 @@ run tonegen with `padsp <http://gnu.wiki/man1/padsp.1.php>`_ that emulates ``/de
 Mac and others not working
 --------------------------
 Perhaps try ``sox`` ``play``. If this works for you, use the ``tonesox`` script::
+
+.. code:: bash
 
     ./tonegen -d - | play -t raw -b 16 -e signed -c 1 -r 44100 -
 

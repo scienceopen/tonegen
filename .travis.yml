@@ -1,14 +1,15 @@
 language: c
 
+os: 
+  - linux
+  - osx
+
 notifications:
   email: false
 
 git:
   depth: 3
 
-os: 
-    - linux
-    - osx
 
 
 script: 
