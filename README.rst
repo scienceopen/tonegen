@@ -5,7 +5,7 @@
 tonegen
 =======
 
-Generates a sine wave on the sound card or standard out for Linux and *BSD systems.
+Generates a sine wave on the sound card or standard out for Linux and BSD systems.
 
 .. contents::
 
@@ -15,7 +15,9 @@ Compile
     
     make
 
-or::
+or
+
+.. code:: sh
 
     cc tonegen.c -o tonegen -lm
 
@@ -48,9 +50,9 @@ run tonegen with `padsp <http://gnu.wiki/man1/padsp.1.php>`_ that emulates ``/de
 
 Mac and others not working
 --------------------------
-Perhaps try ``sox`` ``play``. If this works for you, use the ``tonesox`` script::
+Perhaps try ``sox`` ``play``. If this works for you, use the ``tonesox`` script
 
-.. code:: sh
+.. code:: bash
 
   ./tonegen -d - | play -t raw -b 16 -e signed -c 1 -r 44100 -
 
